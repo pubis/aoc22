@@ -6,36 +6,26 @@ use std::fs::File;
 use std::vec;
 
 fn main() -> io::Result<()> {
-    let file = env::args().nth(1)
+    let file_path = env::args().nth(1)
       .expect("No input given");
 
-    println!("Input: {file}");
+    let file   = File::open(file_path)?;
+    let reader = BufReader::new(file);
 
-    let f = File::open(file)?;
-    let reader = BufReader::new(f);
-    let lines = reader.lines()
+    let mut elves = reader.lines()
       .map(|line| line.unwrap())
-      .map(|line| line.parse::<i64>());
+      .fold(vec![0], |mut acc, line| {
+        line.parse::<usize>()
+          .map(|v| *acc.last_mut().unwrap() += v)
+          .map_err(|_| acc.push(0))
+          .ok();
+        acc
+      });
 
-    let mut v: Vec<i64> = vec![];
-    let mut acc = 0i64;
-    for line in lines {
-      match line {
-        Ok(val) => acc += val,
-        Err(_)  => {
-          v.push(acc);
-          acc = 0;
-        },
-      }
-    }
+    elves.sort();
 
-    v.sort();
-    v.reverse();
-
-    println!("most: {}", v[0]);
-
-    let top3 = v[0] + v[1] + v[2];
-    println!("top3: {}", top3);
+    println!("Part 1: {}", elves.last().unwrap());
+    println!("Part 2: {}", elves.iter().rev().take(3).sum::<usize>());
 
     Ok(())
 }
