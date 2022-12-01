@@ -32,5 +32,8 @@ fn main() -> io::Result<()> {
 
     println!("most: {}", v[0]);
 
+    let top3 = v[0] + v[1] + v[2];
+    println!("top3: {}", top3);
+
     Ok(())
 }
