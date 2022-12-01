@@ -14,9 +14,11 @@ fn main() -> io::Result<()> {
 
     let mut elves = buffer
       .split("\n\n")
-      .map(|s| s.lines().map(str::parse::<usize>).sum())
-      .collect::<Result<Vec<usize>, std::num::ParseIntError>>()
-      .unwrap();
+      .map(|elf| elf
+           .lines()
+           .map(|line| line.parse::<usize>().unwrap())
+           .sum())
+      .collect::<Vec<_>>();
 
     elves.sort();
 
