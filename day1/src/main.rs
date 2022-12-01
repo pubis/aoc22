@@ -13,17 +13,19 @@ fn main() -> io::Result<()> {
 
     let f = File::open(file)?;
     let reader = BufReader::new(f);
+    let lines = reader.lines()
+      .map(|line| line.unwrap())
+      .map(|line| line.parse::<i64>());
 
     let mut v: Vec<i64> = vec![];
     let mut acc = 0i64;
-    for line in reader.lines() {
-      let l = line?;
-      if l.is_empty() {
-        v.push(acc);
-        acc = 0;
-      } else {
-        let v = i64::from_str_radix(&l, 10).unwrap();
-        acc += v;
+    for line in lines {
+      match line {
+        Ok(val) => acc += val,
+        Err(_)  => {
+          v.push(acc);
+          acc = 0;
+        },
       }
     }
 
