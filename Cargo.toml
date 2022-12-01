@@ -8,6 +8,6 @@ default-run = "day1"
 
 [[bin]]
 name = "day1"
-path = "src/day1.rs"
+path = "day1/src/main.rs"
 
 [dependencies]
