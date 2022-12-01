@@ -1,26 +1,22 @@
 use std::env;
 use std::io;
 use std::io::prelude::*;
-use std::io::BufReader;
 use std::fs::File;
-use std::vec;
 
 fn main() -> io::Result<()> {
     let file_path = env::args().nth(1)
       .expect("No input given");
 
-    let file   = File::open(file_path)?;
-    let reader = BufReader::new(file);
+    let mut file   = File::open(file_path)?;
+    let mut buffer = String::new();
 
-    let mut elves = reader.lines()
-      .map(|line| line.unwrap())
-      .fold(vec![0], |mut acc, line| {
-        line.parse::<usize>()
-          .map(|v| *acc.last_mut().unwrap() += v)
-          .map_err(|_| acc.push(0))
-          .ok();
-        acc
-      });
+    file.read_to_string(&mut buffer)?;
+
+    let mut elves = buffer
+      .split("\n\n")
+      .map(|s| s.lines().map(str::parse::<usize>).sum())
+      .collect::<Result<Vec<usize>, std::num::ParseIntError>>()
+      .unwrap();
 
     elves.sort();
 
