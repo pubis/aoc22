@@ -43,4 +43,41 @@ fn main() {
     }
 
     println!("Part 1: {}", score);
+
+    score = 0;
+    for round in rounds.lines() {
+        let moves: Vec<&str> = round.split(' ').collect();
+        let opponent = moves[0];
+        let me       = moves[1];
+
+        match opponent {
+            "A" => {
+                match me {
+                    "X" => score += 3 + 0,
+                    "Y" => score += 1 + 3,
+                    "Z" => score += 2 + 6,
+                    _   => panic!("Unknown move"),
+                }
+            },
+            "B" => {
+                match me {
+                    "X" => score += 1 + 0,
+                    "Y" => score += 2 + 3,
+                    "Z" => score += 3 + 6,
+                    _   => panic!("Unknown move"),
+                }
+            },
+            "C" => {
+                match me {
+                    "X" => score += 2 + 0,
+                    "Y" => score += 3 + 3,
+                    "Z" => score += 1 + 6,
+                    _   => panic!("Unknown move"),
+                }
+            },
+            _ => panic!("Unknown opponent move"),
+        }
+    }
+
+    println!("Part 2: {}", score);
 }
