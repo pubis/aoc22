@@ -1,11 +1,11 @@
 use std::env;
 
 fn score(ch: u8) -> u8 {
-  if ch >= 97 {
-    ch - b'a' + 1
-  } else {
-    ch - b'A' + 27
-  }
+    if ch >= 97 {
+        ch - b'a' + 1
+    } else {
+        ch - b'A' + 27
+    }
 }
 
 fn main() {
@@ -23,8 +23,8 @@ fn main() {
 
         for b in first.as_bytes() {
             if bytes.contains(b) {
-              part1 += score(*b) as u32;
-              break;
+                part1 += score(*b) as u32;
+                break;
             }
         }
     }
@@ -43,17 +43,17 @@ fn main() {
         let mut tmp: Vec<u8> = vec![];
 
         for b in group[1].as_bytes() {
-          if first.contains(b) {
-            tmp.push(*b);
-          }
+            if first.contains(b) {
+                tmp.push(*b);
+            }
         }
 
         let mut v: Vec<u8> = vec![];
         let last = group[2].as_bytes();
         for b in tmp {
-          if last.contains(&b) {
-            v.push(b);
-          }
+            if last.contains(&b) {
+                v.push(b);
+            }
         }
 
         part2 += score(v[0]) as u32;
