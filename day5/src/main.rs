@@ -25,23 +25,22 @@ fn main() {
         .split_ascii_whitespace()
         .count();
 
-    let mut stacks: Vec<Vec<char>> = vec![vec![]; num_stacks];
+    let mut stacks_part1: Vec<Vec<char>> = vec![vec![]; num_stacks];
+    let mut stacks_part2: Vec<Vec<char>> = vec![vec![]; num_stacks];
     while let Some(layer) = drawing.pop() {
         let mut idx   = 0;
         let mut begin = 1;
         while let Some(ch) = layer.get(begin..(begin + 1)) {
             match ch.chars().next().unwrap() {
                 ' ' => (),
-                c   => stacks[idx].push(c),
+                c   => {
+                    stacks_part1[idx].push(c);
+                    stacks_part2[idx].push(c);
+                },
             }
             idx   += 1;
             begin += 4;
         }
-    }
-
-    println!("Initial arrangement:");
-    for stack in &stacks {
-        println!("{:?}", stack);
     }
 
     for instruction in procedure.lines() {
@@ -52,21 +51,39 @@ fn main() {
             inst[5].parse::<usize>().unwrap() -1);
 
         for _ in 0..num {
-            let tmp = stacks[from].pop().unwrap();
-            println!("Moving {} from {} to {}", tmp, from, to);
-            stacks[to].push(tmp);
+            let tmp = stacks_part1[from].pop().unwrap();
+            stacks_part1[to].push(tmp);
         }
     }
 
-    println!("Final arrangement:");
-    for stack in &stacks {
-        println!("{:?}", stack);
-    }
-
     let mut part1 = String::new();
-    for stack in &stacks {
+    for stack in &stacks_part1 {
         let top = stack.last().unwrap();
         part1.push(*top);
     }
     println!("Part 1: {}", part1);
+
+    for instruction in procedure.lines() {
+        let inst: Vec<_> = instruction.split_ascii_whitespace().collect();
+        let (num, from, to) = (
+            inst[1].parse::<usize>().unwrap(),
+            inst[3].parse::<usize>().unwrap() -1,
+            inst[5].parse::<usize>().unwrap() -1);
+
+        let mut tmp: Vec<char> = vec![];
+        for _ in 0..num {
+            tmp.push(stacks_part2[from].pop().unwrap());
+        }
+        tmp.reverse();
+        for ch in tmp {
+            stacks_part2[to].push(ch);
+        }
+    }
+
+    let mut part2 = String::new();
+    for stack in &stacks_part2 {
+        let top = stack.last().unwrap();
+        part2.push(*top);
+    }
+    println!("Part 2: {}", part2);
 }
