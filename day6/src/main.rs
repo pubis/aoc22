@@ -2,16 +2,20 @@ use std::env;
 use std::collections::HashSet;
 
 fn solve(input: &str, len: usize) -> usize {
-    let chars: Vec<_> = input.chars().collect();
-    let mut result = len;
-    for window in chars.windows(len) {
-        let set: HashSet<_> = window.iter().cloned().collect();
-        if set.len() == len {
-            break;
-        }
-        result += 1;
-    }
-    result
+    input
+        .chars()
+        .collect::<Vec<_>>()
+        .windows(len)
+        .enumerate()
+        .map(|(i, window)| (i, window.iter().cloned().collect::<HashSet<_>>()))
+        .find_map(|(i, set)| {
+            if set.len() == len {
+                Some(i + len)
+            } else {
+                None
+            }
+        })
+        .unwrap()
 }
 
 fn part1(input: &str) -> usize {
