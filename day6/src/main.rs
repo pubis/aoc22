@@ -1,13 +1,12 @@
 use std::env;
+use std::collections::HashSet;
 
 fn solve(input: &str, len: usize) -> usize {
     let chars: Vec<_> = input.chars().collect();
     let mut result = len;
     for window in chars.windows(len) {
-        let mut tmp = window.to_vec();
-        tmp.sort();
-        tmp.dedup();
-        if tmp.len() == len {
+        let set: HashSet<_> = window.iter().cloned().collect();
+        if set.len() == len {
             break;
         }
         result += 1;
