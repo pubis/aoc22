@@ -2,15 +2,15 @@ use std::env;
 
 fn part1(input: &str) -> u32 {
     let chars: Vec<_> = input.chars().collect();
-    let mut result = 0u32;
-    for i in 3..=chars.len() {
-        let mut tmp = vec![chars[i - 3], chars[i - 2], chars[i - 1], chars[i]];
+    let mut result = 4u32;
+    for window in chars.windows(4) {
+        let mut tmp = window.to_vec();
         tmp.sort();
         tmp.dedup();
         if tmp.len() == 4 {
-            result = i as u32 + 1;
             break;
         }
+        result += 1;
     }
     result
 }
