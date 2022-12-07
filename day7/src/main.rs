@@ -1,6 +1,7 @@
 use std::env;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::str::FromStr;
 
 enum Entry {
     Directory(PathBuf),
@@ -10,6 +11,8 @@ enum Entry {
 type Tree = HashMap<PathBuf, Vec<Entry>>;
 
 const SIZE_LIMIT: usize = 100_000;
+const FS_SIZE: usize = 70_000_000;
+const SPACE_NEEDED: usize = 30_000_000;
 
 fn calculate_size(tree: &Tree, path: &PathBuf) -> usize {
     tree[path]
@@ -21,7 +24,7 @@ fn calculate_size(tree: &Tree, path: &PathBuf) -> usize {
         .sum()
 }
 
-fn part1(input: &str) -> usize {
+fn parse(input: &str) -> Tree {
     let mut tree: Tree = HashMap::new();
     let mut curr = PathBuf::new();
 
@@ -61,10 +64,30 @@ fn part1(input: &str) -> usize {
     }
 
     tree
+}
+
+fn part1(input: &str) -> usize {
+    let tree = parse(input);
+
+    tree
         .iter()
         .map(|e| calculate_size(&tree, e.0))
         .filter(|size| *size <= SIZE_LIMIT)
         .sum()
+}
+
+fn part2(input: &str) -> usize {
+    let tree = parse(input);
+
+    let free = FS_SIZE - calculate_size(&tree, &PathBuf::from_str("/").unwrap());
+    let need = SPACE_NEEDED - free;
+
+    tree
+        .iter()
+        .map(|e| calculate_size(&tree, e.0))
+        .filter(|size| *size >= need)
+        .min()
+        .unwrap()
 }
 
 fn main() {
@@ -75,6 +98,7 @@ fn main() {
     let input = std::fs::read_to_string(file_path).unwrap();
 
     println!("Part 1: {}", part1(input.as_str()));
+    println!("Part 2: {}", part2(input.as_str()));
 }
 
 #[test]
@@ -104,4 +128,5 @@ $ ls
 7214296 k"#;
 
     assert_eq!(part1(input), 95437);
+    assert_eq!(part2(input), 24933642);
 }
