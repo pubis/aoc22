@@ -64,6 +64,70 @@ fn part1(input: &str) -> usize {
         .sum()
 }
 
+fn scenic_score(map: &Vec<Vec<u8>>, row: usize, col: usize, tree: u8) -> usize {
+    let rows = map.len();
+    let cols = map[0].len();
+
+    let mut left: usize = 0;
+    for c in (0..col).rev() {
+        left += 1;
+        if map[row][c] >= tree {
+            break;
+        }
+    }
+
+    let mut right: usize = 0;
+    for c in (col + 1)..cols {
+        right += 1;
+        if map[row][c] >= tree {
+            break;
+        }
+    }
+
+    let mut up: usize = 0;
+    for r in (0..row).rev() {
+        up += 1;
+        if map[r][col] >= tree {
+            break;
+        }
+    }
+
+    let mut down: usize = 0;
+    for r in (row + 1)..rows {
+        down += 1;
+        if map[r][col] >= tree {
+            break;
+        }
+    }
+
+    left * right * up * down
+}
+
+fn part2(input: &str) -> usize {
+    let map: Vec<Vec<_>> = input
+        .lines()
+        .map(|line| {
+            line
+                .as_bytes()
+                .iter()
+                .map(|b| b - b'0')
+                .collect()
+        })
+        .collect();
+
+    map
+        .iter()
+        .enumerate()
+        .map(|(i, row)| row
+             .iter()
+             .enumerate()
+             .map(|(j, tree)| scenic_score(&map, i, j, *tree))
+             .max()
+             .unwrap())
+        .max()
+        .unwrap()
+}
+
 fn main() {
     let file_path = env::args()
         .nth(1)
@@ -72,6 +136,7 @@ fn main() {
     let input = std::fs::read_to_string(file_path).unwrap();
 
     println!("Part 1: {}", part1(&input));
+    println!("Part 2: {}", part2(&input));
 }
 
 #[test]
@@ -83,4 +148,5 @@ fn example() {
 35390";
 
     assert_eq!(part1(input), 21);
+    assert_eq!(part2(input), 8);
 }
